@@ -1,69 +1,132 @@
-let aulas = [];
-let nextId = 1;
+const { getPool, sql } = require('../config/database');
 
 const postsService = {
-  create(aula) {
-    const novaAula = {
-      idAula: nextId++,
-      titulo: aula.titulo,
-      conteudo: aula.conteudo,
-      idProfessor: aula.idProfessor,
-      idMateria: aula.idMateria,
-      dataPublicacao: new Date(),
-    };
+  async create(aula) {
+    try {
+      const pool = await getPool();
+      
+      const result = await pool
+        .request()
+        .input('titulo', sql.VarChar(255), aula.titulo)
+        .input('conteudo', sql.VarChar(sql.MAX), aula.conteudo)
+        .input('idProfessor', sql.Int, aula.idProfessor)
+        .input('idMateria', sql.Int, aula.idMateria)
+        .query(`
+          INSERT INTO Aulas (titulo, conteudo, idProfessor, idMateria, dataPublicacao)
+          VALUES (@titulo, @conteudo, @idProfessor, @idMateria, GETDATE())
+          SELECT SCOPE_IDENTITY() as idAula
+        `);
 
-    aulas.push(novaAula);
+      const idAula = result.recordset[0].idAula;
 
-    return novaAula;
-  },
-
-  findAll() {
-    return aulas;
-  },
-
-  findById(id) {
-    return aulas.find((aula) => aula.idAula === id);
-  },
-
-  update(id, dadosAtualizados) {
-    const aula = aulas.find((aula) => aula.idAula === id);
-
-    if (!aula) {
-      return null;
+      return {
+        idAula,
+        titulo: aula.titulo,
+        conteudo: aula.conteudo,
+        idProfessor: aula.idProfessor,
+        idMateria: aula.idMateria,
+        dataPublicacao: new Date(),
+      };
+    } catch (error) {
+      console.error('Erro ao criar aula:', error.message);
+      throw error;
     }
-
-    aula.titulo = dadosAtualizados.titulo;
-    aula.conteudo = dadosAtualizados.conteudo;
-    aula.idProfessor = dadosAtualizados.idProfessor;
-    aula.idMateria = dadosAtualizados.idMateria;
-
-    return aula;
   },
 
-  delete(id) {
-    const index = aulas.findIndex((aula) => aula.idAula === id);
+  async findAll() {
+    try {
+      const pool = await getPool();
+      
+      const result = await pool
+        .request()
+        .query('SELECT * FROM Aulas ORDER BY dataPublicacao DESC');
 
-    if (index === -1) {
-      return false;
+      return result.recordset;
+    } catch (error) {
+      console.error('Erro ao buscar aulas:', error.message);
+      throw error;
     }
-
-    aulas.splice(index, 1);
-
-    return true;
   },
 
-  search(termo) {
-    if (!termo) {
-      return aulas;
+  async findById(id) {
+    try {
+      const pool = await getPool();
+      
+      const result = await pool
+        .request()
+        .input('idAula', sql.Int, id)
+        .query('SELECT * FROM Aulas WHERE idAula = @idAula');
+
+      return result.recordset[0] || null;
+    } catch (error) {
+      console.error('Erro ao buscar aula por ID:', error.message);
+      throw error;
     }
+  },
 
-    const termoMinusculo = termo.toLowerCase();
+  async update(id, dadosAtualizados) {
+    try {
+      const pool = await getPool();
+      
+      const result = await pool
+        .request()
+        .input('idAula', sql.Int, id)
+        .input('titulo', sql.VarChar(255), dadosAtualizados.titulo)
+        .input('conteudo', sql.VarChar(sql.MAX), dadosAtualizados.conteudo)
+        .input('idProfessor', sql.Int, dadosAtualizados.idProfessor)
+        .input('idMateria', sql.Int, dadosAtualizados.idMateria)
+        .query(`
+          UPDATE Aulas 
+          SET titulo = @titulo, 
+              conteudo = @conteudo, 
+              idProfessor = @idProfessor, 
+              idMateria = @idMateria
+          WHERE idAula = @idAula
+          SELECT * FROM Aulas WHERE idAula = @idAula
+        `);
 
-    return aulas.filter(
-      (aula) =>
-        aula.titulo.toLowerCase().includes(termoMinusculo) ||
-        aula.conteudo.toLowerCase().includes(termoMinusculo),
-    );
+      return result.recordset[0] || null;
+    } catch (error) {
+      console.error('Erro ao atualizar aula:', error.message);
+      throw error;
+    }
+  },
+
+  async delete(id) {
+    try {
+      const pool = await getPool();
+      
+      const result = await pool
+        .request()
+        .input('idAula', sql.Int, id)
+        .query('DELETE FROM Aulas WHERE idAula = @idAula');
+
+      return result.rowsAffected[0] > 0;
+    } catch (error) {
+      console.error('Erro ao deletar aula:', error.message);
+      throw error;
+    }
+  },
+
+  async search(termo) {
+    try {
+      const pool = await getPool();
+      
+      const result = await pool
+        .request()
+        .input('termo', sql.VarChar(255), `%${termo}%`)
+        .query(`
+          SELECT * FROM Aulas 
+          WHERE titulo LIKE @termo 
+             OR conteudo LIKE @termo
+          ORDER BY dataPublicacao DESC
+        `);
+
+      return result.recordset;
+    } catch (error) {
+      console.error('Erro ao buscar aulas:', error.message);
+      throw error;
+    }
   },
 };
 
