@@ -7,25 +7,26 @@ services:
       dockerfile: Dockerfile
     container_name: blog-educacional-api
     ports:
-      - "3000:3000"
+      - "${PORT:-3000}:3000"
     environment:
-      - PORT=3000
+      PORT: ${PORT:-3000}
+      DATABASE_URL: ${DATABASE_URL:-sqlserver://sa:blog-educacional-db-FIAP@database:1433;database=master;encrypt=true;trustServerCertificate=true}
     depends_on:
       - database
     restart: unless-stopped
 
   database:
-    image: postgres:16-alpine
+    image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: blog-educacional-db
     environment:
-      POSTGRES_DB: blogeducacional
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      ACCEPT_EULA: ${ACCEPT_EULA:-Y}
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:-blog-educacional-db-FIAP}
+      MSSQL_PID: ${MSSQL_PID:-Developer}
     ports:
-      - "5432:5432"
+      - "1433:1433"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - mssql_data:/var/opt/mssql
     restart: unless-stopped
 
 volumes:
-  postgres_data:
+  mssql_data:
