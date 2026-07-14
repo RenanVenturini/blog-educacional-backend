@@ -1,12 +1,25 @@
-// Modelo de dados dos Posts
+// Modelo de dados da Aula
 // Responsável: AMANDA (Banco e Modelagem)
 
-const Post = {
-  // definir estrutura da entidade Post
-
-  id: Number,
-
-  // etc..
+const Aula = {
+  idAula: Number,
+  titulo: String,
+  conteudo: String,
+  idProfessor: Number,
+  idMateria: Number,
+  dataPublicacao: Date
 };
 
-module.exports = Post;
+module.exports = Aula;
+const Professor = {
+  idProfessor: Number,
+  nome: String
+};
+
+module.exports = Professor;
+ const Materia = {
+  idMateria: Number,
+  nome: String
+};
+
+module.exports = Materia;
