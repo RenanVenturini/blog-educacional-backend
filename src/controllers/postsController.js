@@ -1,71 +1,86 @@
 const postsService = require('../services/postsService');
 
-const postsController = {
-  getPosts(req, res) {
-    const posts = postsService.findAll();
+const getPosts = (req, res) => {
+  const aulas = postsService.findAll();
 
-    return res.status(200).json(posts);
-  },
-
-  // getPostById(req, res) {
-
-  //   const { id } = req.params;
-
-  //   const post = postsService.findById(id);
-
-  //   return res.status(200).json(post);
-  // },
-  getPostById(req, res) {
-    const { id } = req.params;
-
-    const post = postsService.findById(Number(id));
-
-    if (!post) {
-      return res.status(404).json({
-        message: 'Post não encontrado',
-      });
-    }
-
-    return res.status(200).json(post);
-  },
-
-  createPost(req, res) {
-    const novoPost = postsService.create(req.body);
-
-    return res.status(201).json(novoPost);
-  },
-
-  updatePost(req, res) {
-    const { id } = req.params;
-
-    const postAtualizado = postsService.update(Number(id), req.body);
-
-    if (!postAtualizado) {
-      return res.status(404).json({ message: 'Post não encontrado' });
-    }
-
-    return res.status(200).json(postAtualizado);
-  },
-
-  deletePost(req, res) {
-    const { id } = req.params;
-
-    const deletado = postsService.delete(Number(id));
-
-    if (!deletado) {
-      return res.status(404).json({ message: 'Post não encontrado' });
-    }
-
-    return res.status(204).send();
-  },
-
-  searchPosts(req, res) {
-    const { termo } = req.query;
-
-    const posts = postsService.search(termo);
-
-    return res.status(200).json(posts);
-  },
+  return res.status(200).json(aulas);
 };
 
-module.exports = postsController;
+const getPostById = (req, res) => {
+  const { id } = req.params;
+
+  const aula = postsService.findById(Number(id));
+
+  if (!aula) {
+    return res.status(404).json({
+      message: 'Aula não encontrada.',
+    });
+  }
+
+  return res.status(200).json(aula);
+};
+
+const createPost = (req, res) => {
+  const { titulo, conteudo, idProfessor, idMateria } = req.body;
+
+  const novaAula = postsService.create({
+    titulo,
+    conteudo,
+    idProfessor,
+    idMateria,
+  });
+
+  return res.status(201).json(novaAula);
+};
+
+const updatePost = (req, res) => {
+  const { id } = req.params;
+
+  const { titulo, conteudo, idProfessor, idMateria } = req.body;
+
+  const aulaAtualizada = postsService.update(Number(id), {
+    titulo,
+    conteudo,
+    idProfessor,
+    idMateria,
+  });
+
+  if (!aulaAtualizada) {
+    return res.status(404).json({
+      message: 'Aula não encontrada.',
+    });
+  }
+
+  return res.status(200).json(aulaAtualizada);
+};
+
+const deletePost = (req, res) => {
+  const { id } = req.params;
+
+  const removido = postsService.delete(Number(id));
+
+  if (!removido) {
+    return res.status(404).json({
+      message: 'Aula não encontrada.',
+    });
+  }
+
+  return res.status(204).send();
+};
+
+const searchPosts = (req, res) => {
+  const { q } = req.query;
+
+  const resultado = postsService.search(q);
+
+  return res.status(200).json(resultado);
+};
+
+module.exports = {
+  getPosts,
+  getPostById,
+  createPost,
+  updatePost,
+  deletePost,
+  searchPosts,
+};

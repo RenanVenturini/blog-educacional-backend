@@ -1,66 +1,68 @@
-let posts = [];
+let aulas = [];
 let nextId = 1;
 
 const postsService = {
-  create(post) {
-    const novoPost = {
-      id: nextId++,
-      title: post.title,
-      content: post.content,
-      author: post.author,
-      createdAt: new Date()
+  create(aula) {
+    const novaAula = {
+      idAula: nextId++,
+      titulo: aula.titulo,
+      conteudo: aula.conteudo,
+      idProfessor: aula.idProfessor,
+      idMateria: aula.idMateria,
+      dataPublicacao: new Date(),
     };
 
-    posts.push(novoPost);
+    aulas.push(novaAula);
 
-    return novoPost;
+    return novaAula;
   },
 
   findAll() {
-    return posts;
+    return aulas;
   },
 
   findById(id) {
-    return posts.find(post => post.id === id);
+    return aulas.find((aula) => aula.idAula === id);
   },
 
   update(id, dadosAtualizados) {
-    const post = posts.find(post => post.id === id);
+    const aula = aulas.find((aula) => aula.idAula === id);
 
-    if (!post) {
+    if (!aula) {
       return null;
     }
 
-    post.titulo = dadosAtualizados.titulo;
-    post.conteudo = dadosAtualizados.conteudo;
-    post.autor = dadosAtualizados.autor;
-    post.dataAtualizacao = new Date();
+    aula.titulo = dadosAtualizados.titulo;
+    aula.conteudo = dadosAtualizados.conteudo;
+    aula.idProfessor = dadosAtualizados.idProfessor;
+    aula.idMateria = dadosAtualizados.idMateria;
 
-    return post;
+    return aula;
   },
 
   delete(id) {
-    const index = posts.findIndex(post => post.id === id);
+    const index = aulas.findIndex((aula) => aula.idAula === id);
 
     if (index === -1) {
       return false;
     }
 
-    posts.splice(index, 1);
+    aulas.splice(index, 1);
 
     return true;
   },
 
   search(termo) {
     if (!termo) {
-      return posts;
+      return aulas;
     }
 
     const termoMinusculo = termo.toLowerCase();
 
-    return posts.filter(post =>
-      post.titulo.toLowerCase().includes(termoMinusculo) ||
-      post.conteudo.toLowerCase().includes(termoMinusculo)
+    return aulas.filter(
+      (aula) =>
+        aula.titulo.toLowerCase().includes(termoMinusculo) ||
+        aula.conteudo.toLowerCase().includes(termoMinusculo),
     );
   },
 };

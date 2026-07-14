@@ -1,9 +1,9 @@
 exports.validatePost = (req, res, next) => {
-  const { title, content } = req.body;
+  const { titulo, conteudo, idProfessor, idMateria } = req.body;
 
-  if (!title || !content) {
+  if (!titulo || !conteudo || !idProfessor || !idMateria) {
     return res.status(400).json({
-      message: 'Título e conteúdo são obrigatórios',
+      message: 'Título, conteúdo, professor e matéria são obrigatórios.',
     });
   }
 
@@ -15,7 +15,7 @@ exports.validateId = (req, res, next) => {
 
   if (!id || isNaN(id)) {
     return res.status(400).json({
-      message: 'ID inválido',
+      message: 'ID inválido.',
     });
   }
 
