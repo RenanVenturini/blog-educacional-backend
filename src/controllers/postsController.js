@@ -7,11 +7,24 @@ const postsController = {
     return res.status(200).json(posts);
   },
 
-  getPostById(req, res) {
+  // getPostById(req, res) {
 
+  //   const { id } = req.params;
+
+  //   const post = postsService.findById(id);
+
+  //   return res.status(200).json(post);
+  // },
+  getPostById(req, res) {
     const { id } = req.params;
 
-    const post = postsService.findById(id);
+    const post = postsService.findById(Number(id));
+
+    if (!post) {
+      return res.status(404).json({
+        message: 'Post não encontrado',
+      });
+    }
 
     return res.status(200).json(post);
   },
@@ -52,7 +65,7 @@ const postsController = {
     const posts = postsService.search(termo);
 
     return res.status(200).json(posts);
-  }
+  },
 };
 
 module.exports = postsController;
