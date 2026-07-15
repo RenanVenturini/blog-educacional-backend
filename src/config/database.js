@@ -3,14 +3,14 @@ const sql = require('mssql');
 const config = {
   user: process.env.DB_USER || 'sa',
   password: process.env.DB_PASSWORD || 'SuaSenhaForte123!',
-  server: process.env.DB_SERVER || 'localhost',
-  database: process.env.DB_NAME || 'blog_educacional',
+  server: process.env.DB_SERVER || 'database',
+  database: process.env.DB_NAME || 'master',
   port: parseInt(process.env.DB_PORT || '1433'),
   authentication: {
     type: 'default'
   },
   options: {
-    encrypt: true,
+    encrypt: false,
     trustServerCertificate: true,
     connectionTimeout: 30000,
     requestTimeout: 30000

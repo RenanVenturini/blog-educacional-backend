@@ -7,10 +7,9 @@ services:
       dockerfile: Dockerfile
     container_name: blog-educacional-api
     ports:
-      - "${PORT:-3000}:3000"
+      - "3000:3000"
     environment:
-      PORT: ${PORT:-3000}
-      DATABASE_URL: ${DATABASE_URL:-sqlserver://sa:SuaSenhaForte123!@database:1433;database=master;encrypt=true;trustServerCertificate=true}
+      PORT: "3000"
     depends_on:
       - database
     restart: unless-stopped
