@@ -2,7 +2,7 @@ const sql = require('mssql');
 
 const config = {
   user: process.env.DB_USER || 'sa',
-  password: process.env.DB_PASSWORD || 'blog-educacional-db-FIAP',
+  password: process.env.DB_PASSWORD || 'SuaSenhaForte123!',
   server: process.env.DB_SERVER || 'localhost',
   database: process.env.DB_NAME || 'blog_educacional',
   port: parseInt(process.env.DB_PORT || '1433'),

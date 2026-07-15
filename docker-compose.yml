@@ -10,7 +10,7 @@ services:
       - "${PORT:-3000}:3000"
     environment:
       PORT: ${PORT:-3000}
-      DATABASE_URL: ${DATABASE_URL:-sqlserver://sa:blog-educacional-db-FIAP@database:1433;database=master;encrypt=true;trustServerCertificate=true}
+      DATABASE_URL: ${DATABASE_URL:-sqlserver://sa:SuaSenhaForte123!@database:1433;database=master;encrypt=true;trustServerCertificate=true}
     depends_on:
       - database
     restart: unless-stopped
@@ -19,9 +19,9 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: blog-educacional-db
     environment:
-      ACCEPT_EULA: ${ACCEPT_EULA:-Y}
-      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:-blog-educacional-db-FIAP}
-      MSSQL_PID: ${MSSQL_PID:-Developer}
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "SuaSenhaForte123!"
+      MSSQL_PID: "Developer"
     ports:
       - "1433:1433"
     volumes:
