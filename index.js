@@ -1,9 +1,14 @@
 require('dotenv').config();
 
 const express = require('express');
+const cors = require('cors');
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+app.use(cors({
+  origin: 'http://localhost:5173',
+}));
 
 const { getPool, closePool } = require('./src/config/database');
 const errorMiddleware = require('./src/middlewares/errorMiddleware');
