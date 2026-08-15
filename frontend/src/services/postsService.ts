@@ -16,3 +16,20 @@ export async function buscarPosts(termo: string): Promise<Post[]> {
 
   return response.data;
 }
+
+export async function buscarPostPorId(id: number): Promise<Post> {
+  const response = await api.get<Post>(`/posts/${id}`);
+
+  return response.data;
+}
+
+export async function criarPost(dados: {
+  titulo: string;
+  conteudo: string;
+  idProfessor: number;
+  idMateria: number;
+}): Promise<Post> {
+  const response = await api.post<Post>("/posts", dados);
+
+  return response.data;
+}
