@@ -15,36 +15,29 @@ function Home() {
 
     const [posts, setPosts] = useState<Post[]>([]);
     const [pesquisa, setPesquisa] = useState("");
+    const [carregando, setCarregando] = useState(true);
+    const [erro, setErro] = useState("");
 
     useEffect(() => {
-
-        carregarPosts();
-
+        carregar("");
     }, []);
 
-    async function carregarPosts() {
+    async function carregar(termo: string) {
+        setCarregando(true);
+        setErro("");
 
-        const resultado = await listarPosts();
-
-        setPosts(resultado);
-
+        try {
+            setPosts(termo.trim() ? await buscarPosts(termo) : await listarPosts());
+        } catch {
+            setErro("Não foi possível conectar à API. Verifique se o servidor está no ar.");
+        } finally {
+            setCarregando(false);
+        }
     }
 
-    async function pesquisar(texto:string){
-
+    function pesquisar(texto: string) {
         setPesquisa(texto);
-
-        if(texto.trim()===""){
-
-            carregarPosts();
-
-            return;
-        }
-
-        const resultado = await buscarPosts(texto);
-
-        setPosts(resultado);
-
+        carregar(texto);
     }
 
     return (
@@ -52,19 +45,57 @@ function Home() {
         <>
             <Header/>
 
-            <main className="container">
+            <main className="home">
 
-                <SearchBar
-                    valor={pesquisa}
-                    aoAlterar={pesquisar}
-                />
+                <div className="home__container">
 
-                {posts.map(post=>(
-                    <PostCard
-                        key={post.idAula}
-                        post={post}
+                    <section className="home__cabecalho">
+
+                        <h1 className="home__titulo">Área do Aluno</h1>
+
+                        <p className="home__subtitulo">
+                            Pesquise as postagens por título, conteúdo, professor ou matéria.
+                        </p>
+
+                    </section>
+
+                    <SearchBar
+                        valor={pesquisa}
+                        aoAlterar={pesquisar}
                     />
-                ))}
+
+                    {carregando && (
+                        <p className="home__aviso">Carregando postagens...</p>
+                    )}
+
+                    {!carregando && erro && (
+                        <p className="home__aviso home__aviso--erro" role="alert">{erro}</p>
+                    )}
+
+                    {!carregando && !erro && posts.length === 0 && (
+                        <p className="home__aviso">
+                            {pesquisa.trim() === ""
+                                ? "Nenhuma postagem publicada ainda."
+                                : `Nenhuma postagem encontrada para "${pesquisa}".`}
+                        </p>
+                    )}
+
+                    {!carregando && !erro && posts.length > 0 && (
+
+                        <section className="home__lista">
+
+                            {posts.map(post=>(
+                                <PostCard
+                                    key={post.idAula}
+                                    post={post}
+                                />
+                            ))}
+
+                        </section>
+
+                    )}
+
+                </div>
 
             </main>
 

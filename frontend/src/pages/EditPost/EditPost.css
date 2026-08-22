@@ -1,0 +1,15 @@
+.edit-post__aviso {
+  padding: 28px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #64748b;
+  text-align: center;
+}
+
+.edit-post__aviso--erro {
+  border-style: solid;
+  border-color: #fca5a5;
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
