@@ -3,3 +3,8 @@ npm-debug.log
 Dockerfile
 docker-compose.yml
 .git
+.github
+.env
+.env.*
+frontend
+README.md
