@@ -292,70 +292,145 @@ npm install
 
 ---
 
-## 3. Configuração do Banco de Dados
+## 3. Criar o arquivo `.env`
 
-O banco SQL Server é configurado através do Docker Compose.
+**Passo obrigatório.** O `.env` não vai para o repositório (contém segredos), e sem ele o Docker Compose falha. Copie o modelo:
 
-Configuração padrão:
-
+```bash
+cp .env.example .env
 ```
-Usuário: sa
 
-Senha: blog-educacional-db-FIAP
+No Windows (PowerShell):
 
-Banco: BlogEducacional
-
-Porta: 1433
+```powershell
+Copy-Item .env.example .env
 ```
+
+Os valores padrão do modelo já funcionam para desenvolvimento local — não é preciso editar nada para rodar. As variáveis são:
+
+| Variável | Para que serve |
+| --- | --- |
+| `PORT` | porta da API (3000) |
+| `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT` | credenciais do SQL Server |
+| `DB_SERVER` | `localhost` para rodar a API na máquina; o Compose usa `database` dentro do container |
+| `JWT_SECRET` | **obrigatório** — segredo que assina os tokens de login; a API não sobe sem ele |
+| `JWT_EXPIRES_IN` | validade do token (8h) |
+| `SEED_PROFESSOR_EMAIL`, `SEED_PROFESSOR_SENHA` | credenciais do professor de teste criado no primeiro start |
+
+Para um ambiente real, gere um segredo próprio:
+
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+O banco (`BlogEducacional`), as tabelas e os dados de exemplo são criados automaticamente no primeiro start da API — não há script de migração para rodar à mão.
 
 ---
 
-## 4. Executar os containers
-
-Subir aplicação e banco:
+## 4. Subir o banco e a API
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
-Verificar containers:
+Esse comando sobe **os dois containers**: o SQL Server e a API. O container da API aguarda o banco ficar saudável antes de iniciar (leva cerca de 40 segundos no primeiro start, enquanto o SQL Server inicializa).
+
+Verificar:
 
 ```bash
-docker ps
+docker compose ps
 ```
 
 Containers esperados:
 
 ```
-blog-educacional-db
-blog-educacional-api
+blog-educacional-db    Up (healthy)
+blog-educacional-api   Up
 ```
+
+Acompanhar o log da API:
+
+```bash
+docker compose logs -f api
+```
+
+Deve aparecer `Conectado ao banco de dados SQL Server` e `Professor de teste disponivel: professor@blog.com`.
+
+A API fica em **http://localhost:3000**.
+
+> Não rode `npm run dev` junto com o container: a API já está de pé na porta 3000 e a segunda instância falha com `EADDRINUSE`.
 
 ---
 
-## 5. Executar a API
+## 5. Executar o front-end
 
-Modo desenvolvimento:
+O front-end React fica na pasta `frontend/`, em outro terminal:
 
 ```bash
+cd frontend
+npm install
 npm run dev
 ```
 
-ou:
+A interface abre em **http://localhost:5173** — a porta precisa ser essa, porque é a única origem liberada no CORS da API.
 
-```bash
-npm start
-```
-
-A API estará disponível:
+Credenciais do professor para acessar a área administrativa:
 
 ```
-http://localhost:3000
+E-mail: professor@blog.com
+Senha:  123456
 ```
+
+A documentação técnica do front-end (arquitetura, rotas e guia de uso) está em **[`frontend/README.md`](frontend/README.md)**.
 
 ---
 
 # 🔗 Endpoints da API
+
+## 🔐 Autenticação
+
+Leitura de aulas é pública. **Criar, atualizar e excluir exigem token** de professor.
+
+| Método | Rota | Token |
+| --- | --- | --- |
+| `POST` | `/auth/login` | não |
+| `GET` | `/auth/perfil` | sim |
+| `GET` | `/posts`, `/posts/search`, `/posts/:id` | não |
+| `POST` `PUT` `DELETE` | `/posts`, `/posts/:id` | **sim** |
+
+### POST `/auth/login`
+
+```json
+{
+  "email": "professor@blog.com",
+  "senha": "123456"
+}
+```
+
+Resposta `200 OK`:
+
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "professor": {
+    "idProfessor": 1,
+    "nome": "Prof. João",
+    "email": "professor@blog.com"
+  }
+}
+```
+
+Credencial inválida devolve `401`; campos faltando, `400`.
+
+Nas rotas protegidas, envie o token no header:
+
+```
+Authorization: Bearer <token>
+```
+
+Sem o header, ou com token expirado, a resposta é `401 Unauthorized`.
+
+---
 
 ## 📚 Aulas
 
@@ -368,6 +443,8 @@ http://localhost:3000
 ```
 /posts
 ```
+
+> Exige o header `Authorization: Bearer <token>`.
 
 Exemplo:
 
@@ -452,6 +529,8 @@ Realiza busca pelo título ou conteúdo.
 /posts/:id
 ```
 
+> Exige o header `Authorization: Bearer <token>`.
+
 Exemplo:
 
 ```
@@ -485,6 +564,8 @@ Resposta:
 /posts/:id
 ```
 
+> Exige o header `Authorization: Bearer <token>`.
+
 Exemplo:
 
 ```
@@ -503,6 +584,8 @@ Resposta:
 
 ## Criar uma aula pelo Postman
 
+Primeiro obtenha o token em `POST /auth/login` (veja a seção de Autenticação) e copie o valor de `token`.
+
 Método:
 
 ```
@@ -513,6 +596,13 @@ URL:
 
 ```
 http://localhost:3000/posts
+```
+
+Headers:
+
+```
+Content-Type: application/json
+Authorization: Bearer <token>
 ```
 
 Body:
