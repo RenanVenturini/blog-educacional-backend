@@ -5,6 +5,8 @@ const SELECT_AULAS = `
     A.idAula,
     A.titulo,
     A.conteudo,
+    A.idProfessor,
+    A.idMateria,
     P.nome AS nomeProfessor,
     M.nome AS nomeMateria,
     A.dataPublicacao
