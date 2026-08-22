@@ -6,17 +6,19 @@ const postController = require('../controllers/postsController');
 
 const postMiddleware = require('../middlewares/postMiddleware');
 
+const authMiddleware = require('../middlewares/authMiddleware');
+
 router.get('/search', postController.searchPosts);
 
 router.get('/', postController.getPosts);
 
 router.get('/:id', postMiddleware.validateId, postController.getPostById);
 
-router.post('/', postMiddleware.validatePost, postController.createPost);
+router.post('/', authMiddleware.verificarToken, postMiddleware.validatePost, postController.createPost);
 
-router.put('/:id', postMiddleware.validateId, postMiddleware.validatePost, postController.updatePost);
+router.put('/:id', authMiddleware.verificarToken, postMiddleware.validateId, postMiddleware.validatePost, postController.updatePost);
 
-router.delete('/:id', postMiddleware.validateId, postController.deletePost);
+router.delete('/:id', authMiddleware.verificarToken, postMiddleware.validateId, postController.deletePost);
 
 module.exports = router;
 
