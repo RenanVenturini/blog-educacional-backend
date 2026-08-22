@@ -1,24 +1,100 @@
 .post-page {
-  max-width: 1000px;
-  margin: auto;
-  padding: 40px 20px;
+  flex: 1;
+  background-color: #eff1f4;
 }
 
-.post-page h1 {
-  margin-bottom: 20px;
+.post-page__container {
+  width: min(800px, 92%);
+  margin: 0 auto;
+  padding: 40px 0 56px;
 }
 
-.post-page hr {
-  margin: 30px 0;
+.post-page__cartao {
+  background-color: #ffffff;
+  border: 1px solid #e5ebf3;
+  border-radius: 10px;
+  padding: 40px;
+  box-shadow: 0 2px 10px rgba(23, 37, 84, 0.05);
 }
 
-.post-content {
-  white-space: pre-wrap;
-  line-height: 1.8;
-  font-size: 18px;
+.post-page__tags {
+  margin-bottom: 14px;
 }
 
-.post-page a {
+.post-page__tag {
   display: inline-block;
-  margin-top: 20px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background-color: #e8f2fd;
+  color: #1b74c4;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.post-page__titulo {
+  color: #1f2937;
+  font-size: clamp(1.625rem, 1.3rem + 1.6vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
+.post-page__meta {
+  margin-top: 10px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid #e5ebf3;
+  color: #94a3b8;
+  font-size: 0.875rem;
+}
+
+.post-page__conteudo {
+  margin-top: 28px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: #334155;
+  font-size: 1.0625rem;
+  line-height: 1.8;
+}
+
+.post-page__aviso {
+  padding: 28px;
+  border: 1px dashed #cbd5e1;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #64748b;
+  text-align: center;
+}
+
+.post-page__aviso--erro {
+  border-style: solid;
+  border-color: #fca5a5;
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+.post-page__voltar {
+  display: inline-block;
+  margin-top: 28px;
+  color: #2b8ae6;
+  font-weight: 600;
+}
+
+.post-page__voltar::before {
+  content: "← ";
+}
+
+.post-page__voltar:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 640px) {
+  .post-page__container {
+    padding: 28px 0 40px;
+  }
+
+  .post-page__cartao {
+    padding: 26px 22px;
+  }
 }
