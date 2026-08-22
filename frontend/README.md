@@ -1,21 +1,86 @@
-# Blog Educacional — Front-end
+# 📚 Blog Educacional — Front-end
 
-Interface web do Blog Educacional, construída em React, que consome a API REST do back-end deste repositório. Atende dois perfis:
+## Tech Challenge 3 — FIAP | Grupo 20
 
-- **Aluno** — navega e pesquisa as postagens publicadas, sem cadastro.
-- **Professor** — autentica-se e gerencia as postagens (criar, editar e excluir).
+## 📌 Sobre o projeto
 
-## Tecnologias
+O **Blog Educacional** é uma aplicação web desenvolvida em **React e TypeScript**, criada como parte do **Tech Challenge 3 da FIAP**.
 
-React 19 · TypeScript 6 · Vite 8 · React Router DOM 7 · Axios 1.19 · Oxlint
+O projeto tem como objetivo disponibilizar uma plataforma educacional para publicação e consulta de conteúdos, conectando uma interface moderna e responsiva a uma **API REST desenvolvida no back-end**.
 
-A estilização usa CSS puro, um arquivo por componente. O estado de sessão usa a Context API do próprio React. Nenhuma biblioteca de UI, ícones ou gerenciamento de estado foi adicionada.
+A aplicação possui dois perfis de acesso:
+
+- 🎓 **Aluno:** pode visualizar, pesquisar e ler as postagens publicadas, sem necessidade de cadastro ou login.
+- 👨‍🏫 **Professor:** possui acesso autenticado ao painel administrativo, podendo criar, visualizar, editar e excluir postagens.
+
+O front-end foi desenvolvido com foco em **organização de código, reutilização de componentes, responsividade, acessibilidade e integração com a API**.
 
 ---
 
-## Setup inicial
+## 🚀 Funcionalidades
 
-**Pré-requisitos:** Node.js 20+ e o **back-end em execução** em `http://localhost:3000` (veja o README da raiz). Sem a API no ar as telas abrem, mas exibem aviso de falha de conexão.
+### Área do Aluno
+
+- Visualização das postagens publicadas
+- Pesquisa de postagens
+- Visualização de título, matéria, autor, data e resumo
+- Leitura completa das postagens
+- Interface responsiva
+- Acesso sem necessidade de login
+
+### Área do Professor
+
+- Login com autenticação
+- Painel administrativo
+- Listagem de postagens
+- Criação de novas postagens
+- Edição de postagens existentes
+- Exclusão de postagens
+- Visualização individual das postagens
+- Controle de sessão
+- Proteção das rotas administrativas
+- Logout
+
+---
+
+## 🛠️ Tecnologias
+
+- **React 19**
+- **TypeScript 6**
+- **Vite 8**
+- **React Router DOM 7**
+- **Axios 1.19**
+- **Oxlint**
+- **CSS puro**
+- **Context API**
+
+A estilização utiliza **CSS puro**, com um arquivo de estilos específico para cada componente.
+
+Não foram utilizadas bibliotecas externas de UI, ícones ou gerenciamento de estado.
+
+---
+
+## ⚙️ Setup inicial
+
+### Pré-requisitos
+
+Antes de executar o projeto, é necessário ter:
+
+- **Node.js 20+**
+- **npm**
+- **Back-end do Blog Educacional em execução**
+
+O back-end deve estar disponível em:
+
+```text
+http://localhost:3000
+```
+
+> Consulte o README da raiz do projeto para as instruções de configuração do back-end, banco de dados e Docker.
+
+### Instalação
+
+Na pasta raiz do projeto, execute:
 
 ```bash
 cd frontend
@@ -23,165 +88,429 @@ npm install
 npm run dev
 ```
 
-> A porta 5173 não é opcional: o back-end libera CORS apenas para `http://localhost:5173`. Se o Vite subir em outra porta, o navegador bloqueia as requisições.
+Após iniciar o Vite, o front-end estará disponível em:
 
-Outros comandos:
+```text
+http://localhost:5173
+```
 
-| Comando | O que faz |
-| --- | --- |
-| `npm run build` | checa tipos (`tsc -b`) e gera o build em `dist/` |
-| `npm run preview` | serve o build de produção |
-| `npm run lint` | executa o Oxlint sobre `src/` |
-
-A URL da API fica em `src/services/api.ts` (`baseURL`). Para apontar para outro host, altere ali e ajuste o `cors` do back-end em `index.js`.
+> ⚠️ **Importante:** a aplicação deve ser executada na porta `5173`, pois o back-end está configurado para permitir requisições CORS apenas dessa origem.
 
 ---
 
-## Arquitetura da aplicação
+## 📋 Comandos disponíveis
 
-```
-Páginas (pages/)          rotas completas, controlam estado e efeitos
-      |
-Componentes (components/) pedaços reutilizáveis de interface
-      |
-Serviços (services/)      única camada que conversa com a API
-      |
+| Comando           | Descrição                                    |
+| ----------------- | -------------------------------------------- |
+| `npm install`     | Instala as dependências do projeto           |
+| `npm run dev`     | Inicia o servidor de desenvolvimento         |
+| `npm run build`   | Verifica os tipos e gera o build de produção |
+| `npm run preview` | Executa uma prévia do build de produção      |
+| `npm run lint`    | Executa o Oxlint no código-fonte             |
+
+---
+
+## 🏗️ Arquitetura da aplicação
+
+A aplicação foi organizada separando responsabilidades entre páginas, componentes, contexto de autenticação e serviços.
+
+```text
+Páginas (pages/)
+       ↓
+Componentes (components/)
+       ↓
+Serviços (services/)
+       ↓
 API REST (back-end)
 ```
 
-Duas regras sustentam a divisão: **nenhum componente chama `axios` diretamente** (toda requisição passa por `services/`, que centraliza a URL base e o envio do token) e **o estado de sessão vive no contexto**, acessado por qualquer tela com o hook `useAuth()`.
+### Principais responsabilidades
 
-### Estrutura de pastas
+- **Pages:** controlam as telas, rotas, estados e efeitos da aplicação.
+- **Components:** possuem elementos reutilizáveis da interface.
+- **Services:** centralizam a comunicação com a API.
+- **Contexts:** controlam o estado global da autenticação.
+- **Types:** armazenam as interfaces e tipagens utilizadas pela aplicação.
 
-```
+Uma das principais regras da arquitetura é que os componentes **não realizam requisições diretamente com Axios**. Toda comunicação com a API passa pela camada de serviços.
+
+---
+
+## 📁 Estrutura de pastas
+
+```text
 src/
-├── main.tsx                ponto de entrada; envolve o App no AuthProvider
-├── App.tsx                 definição das rotas
-├── index.css               reset, tipografia base e layout de rodapé fixo
+├── main.tsx
+├── App.tsx
+├── index.css
 │
-├── assets/                 ilustração da tela inicial e ícones SVG
+├── assets/
+│   └── ilustrações e ícones SVG
 │
-├── pages/                  Landing, Home, Post, Login, Admin, CreatePost, EditPost
+├── pages/
+│   ├── Landing/
+│   ├── Home/
+│   ├── Post/
+│   ├── Login/
+│   ├── Admin/
+│   ├── CreatePost/
+│   └── EditPost/
 │
 ├── components/
-│   ├── Header/ Footer/     cabeçalho e rodapé das telas públicas
-│   ├── SearchBar/          campo de busca controlado
-│   ├── PostCard/           cartão de postagem na listagem
-│   ├── FundoDecorativo/    formas SVG de fundo
-│   ├── PainelLayout/       moldura das telas do professor
-│   ├── PostForm/           formulário compartilhado por criar e editar
-│   └── RotaPrivada/        guarda de rota e tela de acesso negado
+│   ├── Header/
+│   ├── Footer/
+│   ├── SearchBar/
+│   ├── PostCard/
+│   ├── FundoDecorativo/
+│   ├── PainelLayout/
+│   ├── PostForm/
+│   └── RotaPrivada/
 │
 ├── contexts/
-│   ├── authContext.ts      contexto e hook useAuth()
-│   └── AuthProvider.tsx    estado da sessão e validação do token
+│   ├── authContext.ts
+│   └── AuthProvider.tsx
 │
 ├── services/
-│   ├── api.ts              instância do axios e interceptor do token
-│   ├── authService.ts      login, sessão no localStorage e perfil
-│   └── postsService.ts     CRUD de postagens
+│   ├── api.ts
+│   ├── authService.ts
+│   └── postsService.ts
 │
-└── types/                  interfaces Post, Professor e RespostaLogin
+└── types/
 ```
 
-Dois pontos da organização que não são óbvios: `PostForm` e `PainelLayout` existem porque as telas de criar e editar compartilham o mesmo formulário e a mesma moldura; e `authContext.ts` está separado de `AuthProvider.tsx` porque o Fast Refresh do Vite exige que um arquivo exporte apenas componentes, então o hook fica em um módulo `.ts` e o provider em um `.tsx`.
+### Organização dos principais diretórios
 
-### Rotas
+**`pages/`**
 
-Definidas em `src/App.tsx`. As protegidas são envolvidas pelo componente `RotaPrivada`.
+Contém as páginas principais da aplicação e suas respectivas regras de funcionamento.
 
-| Rota | Página | Acesso |
-| --- | --- | --- |
-| `/` | `Landing` | público |
-| `/aluno` | `Home` | público |
-| `/posts/:id` | `Post` | público |
-| `/login` | `Login` | público |
-| `/admin` | `Admin` | **protegido** |
-| `/posts/novo` | `CreatePost` | **protegido** |
-| `/posts/:id/editar` | `EditPost` | **protegido** |
+**`components/`**
 
-### Camada de serviços
+Reúne componentes reutilizáveis, como cabeçalho, rodapé, cards de postagens, formulário e elementos de layout.
 
-`api.ts` cria a instância do axios e registra um interceptor que anexa `Authorization: Bearer <token>` em toda requisição, quando há token salvo — por isso nenhuma tela monta esse header manualmente.
+**`contexts/`**
 
-| `postsService.ts` | Requisição |
-| --- | --- |
-| `listarPosts()` | `GET /posts` |
-| `buscarPosts(termo)` | `GET /posts/search?q=termo` |
-| `buscarPostPorId(id)` | `GET /posts/:id` |
-| `criarPost(dados)` | `POST /posts` |
-| `atualizarPost(id, dados)` | `PUT /posts/:id` |
-| `excluirPost(id)` | `DELETE /posts/:id` |
+Responsável pelo gerenciamento da sessão e autenticação do professor utilizando a Context API do React.
 
-| `authService.ts` | O que faz |
-| --- | --- |
-| `login(email, senha)` | `POST /auth/login`, devolve `{ token, professor }` |
-| `salvarSessao` / `limparSessao` | grava e remove a sessão no `localStorage` |
-| `obterToken` / `obterProfessor` | leem o `localStorage` |
-| `buscarPerfil()` | `GET /auth/perfil`, valida o token atual |
+**`services/`**
 
-Os três verbos de escrita (`POST`, `PUT`, `DELETE`) exigem token; todos os `GET` de postagens são públicos.
+Centraliza todas as requisições realizadas para o back-end.
 
-### Autenticação e autorização
+**`types/`**
 
-```
-1. Login       Login.tsx chama entrar() do contexto -> POST /auth/login
-               -> { token, professor } salvos no localStorage -> vai para /admin
-2. Requisições o interceptor do axios injeta o Bearer token em toda chamada
-3. Recarga     ao montar, o AuthProvider chama GET /auth/perfil; se falhar,
-               limpa a sessão (evita interface "logada" com token morto)
-4. Proteção    RotaPrivada consulta useAuth(): sem sessão, renderiza
-               "Acesso negado / Faça login para continuar"
-5. Expiração   o token vale 8 horas; expirado, as telas avisam e pedem novo login
-6. Logout      o botão "Sair" limpa o localStorage e volta ao login
-```
-
-Qualquer componente consome a sessão com `const { professor, autenticado, carregando, entrar, sair } = useAuth()`.
-
-> A proteção do front é de experiência de uso, não de segurança. Quem impede a escrita sem token é o back-end, que valida o JWT em `POST`, `PUT` e `DELETE /posts`.
-
-### Estilização e responsividade
-
-- Um arquivo CSS por componente, importado por ele (`import "./PostCard.css"`), com classes no padrão `bloco__elemento--modificador`.
-- Rodapé sempre no fim da página: `#root` é flex em coluna com `min-height: 100vh`, o conteúdo recebe `flex: 1` e o `.footer` usa `margin-top: auto`.
-- Paleta: azul de ação `#2b8ae6`, hover `#1b74c4`, fundo `#eff1f4`, formas `#c7ddf8` e `#dcebfc`, texto `#1f2937` e texto suave `#64748b`.
-- Títulos com `clamp()` e listagem em `repeat(auto-fill, minmax(300px, 1fr))` — escalam sem media query. Breakpoints em 900px, 640px e 480px para os ajustes de layout.
-- Acessibilidade: `<label>` associado por `htmlFor` em todo campo, ícones decorativos com `alt=""` e `aria-hidden`, mensagens de estado com `role="status"` ou `role="alert"`, inputs em `font-size: 1rem` para evitar o zoom do iOS.
+Contém as interfaces TypeScript utilizadas na aplicação.
 
 ---
 
-## Guia de uso
+## 🛣️ Rotas
 
-Com back-end e front-end em execução, abra **http://localhost:5173**. A tela inicial oferece dois caminhos: **Área do Aluno** e **Área do Professor**.
+As rotas são definidas em `src/App.tsx`.
 
-### Fluxo do aluno
+| Rota                | Página     | Acesso       |
+| ------------------- | ---------- | ------------ |
+| `/`                 | Landing    | Público      |
+| `/aluno`            | Home       | Público      |
+| `/posts/:id`        | Post       | Público      |
+| `/login`            | Login      | Público      |
+| `/admin`            | Admin      | 🔒 Protegido |
+| `/posts/novo`       | CreatePost | 🔒 Protegido |
+| `/posts/:id/editar` | EditPost   | 🔒 Protegido |
 
-Não exige login.
+As rotas administrativas são protegidas pelo componente `RotaPrivada`.
 
-1. Clique em **Área do Aluno** (`/aluno`) para ver todas as postagens em cartões com matéria, título, autor, data e resumo.
-2. Use o campo de busca para filtrar — o termo é procurado no título, no conteúdo, no nome do professor e no nome da matéria. Apagar o campo recarrega a lista completa.
-3. **Ler mais** abre a postagem inteira (`/posts/:id`), com as quebras de linha preservadas.
+---
 
-A listagem distingue os casos: carregando, falha de conexão, nenhuma postagem publicada e busca sem resultado.
+## 🔌 Integração com a API
 
-### Fluxo do professor
+A comunicação com o back-end é realizada utilizando **Axios**.
 
-Exige login. Credenciais de teste criadas pelo back-end no primeiro start:
+O arquivo:
 
+```text
+src/services/api.ts
 ```
+
+contém a instância principal do Axios e configura o `baseURL` da API.
+
+A aplicação utiliza um interceptor para adicionar automaticamente o token JWT nas requisições autenticadas.
+
+```text
+Authorization: Bearer <token>
+```
+
+### Posts
+
+| Função                     | Método | Endpoint                |
+| -------------------------- | ------ | ----------------------- |
+| `listarPosts()`            | GET    | `/posts`                |
+| `buscarPosts(termo)`       | GET    | `/posts/search?q=termo` |
+| `buscarPostPorId(id)`      | GET    | `/posts/:id`            |
+| `criarPost(dados)`         | POST   | `/posts`                |
+| `atualizarPost(id, dados)` | PUT    | `/posts/:id`            |
+| `excluirPost(id)`          | DELETE | `/posts/:id`            |
+
+### Autenticação
+
+| Função                | Método | Endpoint       |
+| --------------------- | ------ | -------------- |
+| `login(email, senha)` | POST   | `/auth/login`  |
+| `buscarPerfil()`      | GET    | `/auth/perfil` |
+
+A sessão é armazenada no `localStorage`.
+
+---
+
+## 🔐 Autenticação e autorização
+
+O fluxo de autenticação funciona da seguinte maneira:
+
+```text
+1. Professor acessa /login
+          ↓
+2. Informa e-mail e senha
+          ↓
+3. Front-end envia POST /auth/login
+          ↓
+4. API retorna token + dados do professor
+          ↓
+5. Sessão é armazenada no localStorage
+          ↓
+6. Professor é direcionado para /admin
+          ↓
+7. Axios envia o token automaticamente
+          ↓
+8. RotaPrivada protege as páginas administrativas
+```
+
+Ao recarregar a aplicação, o `AuthProvider` valida a sessão através do endpoint:
+
+```text
+GET /auth/perfil
+```
+
+Caso o token seja inválido ou esteja expirado, a sessão é encerrada e o usuário precisa realizar o login novamente.
+
+> A proteção realizada pelo front-end tem como objetivo controlar a experiência de navegação. A segurança das operações é garantida pelo back-end, que valida o JWT nas operações de criação, edição e exclusão.
+
+---
+
+## 🎨 Estilização e responsividade
+
+A aplicação utiliza **CSS puro**, mantendo um arquivo de estilos separado para cada componente.
+
+Exemplo:
+
+```text
+PostCard/
+├── PostCard.tsx
+└── PostCard.css
+```
+
+A interface foi desenvolvida para funcionar em diferentes tamanhos de tela, utilizando:
+
+- `clamp()` para tamanhos de texto;
+- CSS Grid;
+- Flexbox;
+- Media Queries;
+- Breakpoints em `900px`, `640px` e `480px`;
+- Layout responsivo para desktop, tablet e mobile.
+
+### 🎨 Paleta principal
+
+| Elemento         | Cor       |
+| ---------------- | --------- |
+| Azul principal   | `#2b8ae6` |
+| Azul hover       | `#1b74c4` |
+| Fundo            | `#eff1f4` |
+| Forma clara      | `#c7ddf8` |
+| Forma suave      | `#dcebfc` |
+| Texto            | `#1f2937` |
+| Texto secundário | `#64748b` |
+
+---
+
+## ♿ Acessibilidade
+
+Foram aplicadas algumas práticas de acessibilidade durante o desenvolvimento:
+
+- Uso de `<label>` associado aos campos através de `htmlFor`;
+- Uso de `alt=""` para imagens decorativas;
+- Uso de `aria-hidden` em elementos puramente visuais;
+- Mensagens de carregamento e estado utilizando `role="status"`;
+- Mensagens de erro utilizando `role="alert"`;
+- Tamanho mínimo de `1rem` nos inputs para evitar zoom automático no iOS.
+
+---
+
+# 📖 Guia de uso
+
+Com o back-end e o front-end em execução, acesse:
+
+```text
+http://localhost:5173
+```
+
+A tela inicial apresenta duas opções:
+
+```text
+Área do Aluno
+Área do Professor
+```
+
+---
+
+## 🎓 Fluxo do Aluno
+
+O aluno não precisa realizar login.
+
+### 1. Acessar a área do aluno
+
+Clique em **Área do Aluno** para acessar:
+
+```text
+/aluno
+```
+
+Nessa tela são apresentadas as postagens disponíveis.
+
+### 2. Pesquisar uma postagem
+
+Utilize o campo de busca para localizar conteúdos.
+
+A pesquisa considera informações como:
+
+- título;
+- conteúdo;
+- nome do professor;
+- matéria.
+
+### 3. Ler uma postagem
+
+Ao selecionar **Ler mais**, o usuário é direcionado para:
+
+```text
+/posts/:id
+```
+
+onde poderá visualizar o conteúdo completo da postagem.
+
+---
+
+## 👨‍🏫 Fluxo do Professor
+
+O professor precisa realizar login para acessar as funcionalidades administrativas.
+
+### Credenciais de teste
+
+```text
 E-mail: professor@blog.com
-Senha:  123456
+Senha: 123456
 ```
 
-1. Clique em **Área do Professor** (`/login`) e informe e-mail e senha.
-2. Autenticado, você cai no **Painel do Professor** (`/admin`), com todas as postagens e os botões **Ver**, **Editar** e **Excluir** em cada linha.
-3. **+ Nova postagem** (`/posts/novo`): preencha título, autor, matéria e conteúdo e clique em **Salvar**. Os campos são limpos para a próxima.
-4. **Editar** (`/posts/:id/editar`) abre o formulário já preenchido com os dados atuais; ajuste e clique em **Salvar alterações**.
-5. **Excluir** pede confirmação na própria linha — *Excluir? Confirmar / Cancelar*.
-6. **Sair**, no topo do cartão, encerra a sessão.
+### 1. Login
 
-Abrir `/admin`, `/posts/novo` ou `/posts/:id/editar` sem sessão válida exibe **"Acesso negado — Faça login para continuar"** com um botão para o login. Quem já está autenticado e acessa `/login` vai direto ao painel.
+Acesse:
+
+```text
+/login
+```
+
+Informe as credenciais de teste para entrar no sistema.
+
+### 2. Painel administrativo
+
+Após o login, o professor é direcionado para:
+
+```text
+/admin
+```
+
+No painel é possível visualizar todas as postagens e realizar ações como:
+
+- Visualizar;
+- Editar;
+- Excluir;
+- Criar nova postagem.
+
+### 3. Criar postagem
+
+Acesse:
+
+```text
+/posts/novo
+```
+
+Preencha:
+
+- Título;
+- Autor;
+- Matéria;
+- Conteúdo.
+
+Depois, clique em **Salvar**.
+
+### 4. Editar postagem
+
+Acesse a opção **Editar** em uma postagem existente.
+
+A aplicação abre o formulário preenchido com os dados atuais.
+
+Após realizar as alterações, clique em:
+
+**Salvar alterações**
+
+### 5. Excluir postagem
+
+Ao selecionar **Excluir**, a aplicação solicita uma confirmação antes de remover a postagem.
+
+### 6. Logout
+
+O botão **Sair** encerra a sessão e remove os dados de autenticação armazenados no navegador.
 
 ---
 
-O setup do servidor, do banco SQL Server e dos containers está no [README da raiz do repositório](../README.md).
+## 🔒 Rotas protegidas
+
+Caso um usuário tente acessar diretamente uma rota administrativa sem estar autenticado, como:
+
+```text
+/admin
+/posts/novo
+/posts/:id/editar
+```
+
+será exibida a mensagem:
+
+> **Acesso negado — Faça login para continuar**
+
+Usuários que já estiverem autenticados e tentarem acessar `/login` serão direcionados automaticamente para o painel administrativo.
+
+---
+
+## 🔗 Back-end
+
+O front-end depende da API REST desenvolvida no projeto do back-end.
+
+O setup do:
+
+- servidor;
+- banco de dados SQL Server;
+- Docker;
+- Docker Compose;
+- API REST;
+
+está documentado no README da raiz do repositório.
+
+[📖 README do Back-end](../README.md)
+
+---
+
+## 👩‍💻 Desenvolvimento
+
+Projeto desenvolvido como parte do **Tech Challenge 3 — FIAP**, com foco na construção de uma aplicação web educacional integrada a uma API REST.
+
+**Grupo 20 — FIAP**
+
+- Gabrielle Carvalho
+- Renan Venturini
+- Amanda Rodrigues
