@@ -1,19 +1,22 @@
 import { Link } from "react-router-dom";
+
+import iconeChapeu from "../../assets/icons/chapeu.svg";
+
 import "./Header.css";
 
 function Header() {
   return (
     <header className="header">
-      <div className="header__container">
-        <Link to="/" className="header__logo">
-          Blog Educacional
-        </Link>
+      <Link to="/" className="header__marca">
+        <img
+          src={iconeChapeu}
+          alt=""
+          aria-hidden="true"
+          className="header__icone"
+        />
 
-        <nav className="header__nav">
-          <Link to="/">Início</Link>
-          <Link to="/login">Login</Link>
-        </nav>
-      </div>
+        <span className="header__titulo">Blog Educacional</span>
+      </Link>
     </header>
   );
 }

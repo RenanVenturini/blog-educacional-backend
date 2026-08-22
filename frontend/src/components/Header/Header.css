@@ -1,36 +1,36 @@
 .header {
-  background-color: #172554;
-  color: #ffffff;
-  padding: 20px 24px;
+  background-color: #ffffff;
+  padding: 18px 24px;
+  box-shadow: 0 1px 3px rgba(23, 37, 84, 0.08);
 }
 
-.header__container {
-  width: min(1120px, 100%);
+.header__marca {
+  width: min(1180px, 100%);
   margin: 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+  justify-content: center;
+  gap: 12px;
 }
 
-.header__logo {
-  color: #ffffff;
-  font-size: 1.5rem;
-  font-weight: 700;
-  text-decoration: none;
+.header__icone {
+  width: 30px;
+  height: auto;
 }
 
-.header__nav {
-  display: flex;
-  gap: 20px;
+.header__titulo {
+  color: #2b8ae6;
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+  font-weight: 300;
+  letter-spacing: -0.01em;
 }
 
-.header__nav a {
-  color: #ffffff;
-  text-decoration: none;
-  font-weight: 600;
-}
+@media (max-width: 480px) {
+  .header {
+    padding: 14px 16px;
+  }
 
-.header__nav a:hover {
-  text-decoration: underline;
+  .header__icone {
+    width: 26px;
+  }
 }

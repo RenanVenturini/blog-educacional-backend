@@ -12,21 +12,23 @@ function PostCard({ post }: PostCardProps) {
       ? `${post.conteudo.substring(0, 180)}...`
       : post.conteudo;
 
+  const data = new Date(post.dataPublicacao).toLocaleDateString("pt-BR");
+
   return (
     <article className="post-card">
-      <h2>{post.titulo}</h2>
+      <div className="post-card__tags">
+        <span className="post-card__tag">{post.nomeMateria}</span>
+      </div>
 
-      <p>
-        <strong>Professor:</strong> {post.nomeProfessor}
+      <h2 className="post-card__titulo">{post.titulo}</h2>
+
+      <p className="post-card__meta">
+        {post.nomeProfessor} · {data}
       </p>
 
-      <p>
-        <strong>Matéria:</strong> {post.nomeMateria}
-      </p>
+      <p className="post-card__resumo">{descricao}</p>
 
-      <p>{descricao}</p>
-
-      <Link to={`/posts/${post.idAula}`}>
+      <Link to={`/posts/${post.idAula}`} className="post-card__link">
         Ler mais
       </Link>
     </article>

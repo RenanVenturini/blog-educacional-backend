@@ -1,8 +1,10 @@
 .footer {
   margin-top: auto;
-  background-color: #172554;
-  color: #ffffff;
-  padding: 20px;
+  padding: 24px 16px;
+  border-top: 1px solid #dde5ef;
+  background-color: #ffffff;
+  color: #64748b;
+  font-size: 0.875rem;
   text-align: center;
 }
 

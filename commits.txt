@@ -1,0 +1,63 @@
+===========================================================================
+ ROTEIRO DE COMMITS - Blog Educacional
+===========================================================================
+
+ Commits agrupados por pasta, na ordem em que as dependencias aparecem.
+ Execute os pares "git add" + "git commit" na sequencia abaixo.
+
+ Confira com "git status" antes de cada commit. Se aparecer algo alem do
+ que voce acabou de adicionar, sobrou coisa no stage.
+
+===========================================================================
+ BACKEND
+===========================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+===========================================================================
+ FRONTEND
+===========================================================================
+
+
+
+--- 15 ----------------------------------------------------------------
+git add frontend/src/components
+git commit -m "feat(components): adiciona rota privada, painel e formulario compartilhado"
+
+--- 16 ----------------------------------------------------------------
+git add frontend/src/pages
+git commit -m "feat(pages): adiciona landing, login, painel e edicao de posts"
+
+--- 17 ----------------------------------------------------------------
+git add frontend/src/App.tsx frontend/src/main.tsx frontend/src/index.css
+git commit -m "feat: define as rotas protegidas e os estilos base"
+
+===========================================================================
+ DOCUMENTACAO
+===========================================================================
+
+--- 18 ----------------------------------------------------------------
+git add README.md frontend/README.md
+git commit -m "docs: documenta o front-end e atualiza o setup"
+
+===========================================================================
+ CONFERENCIA FINAL
+===========================================================================
+
+git log --oneline      -> deve listar os 18 commits
+git status             -> deve estar limpo
+
+ Obs: este arquivo (commits.txt) e so um roteiro de apoio. Apague antes
+ de terminar, ou ele vai aparecer como arquivo novo no git status.
