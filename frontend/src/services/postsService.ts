@@ -33,3 +33,20 @@ export async function criarPost(dados: {
 
   return response.data;
 }
+export async function atualizarPost(
+  id: number,
+  dados: {
+    titulo: string;
+    conteudo: string;
+    idProfessor: number;
+    idMateria: number;
+  }
+): Promise<Post> {
+  const response = await api.put<Post>(`/posts/${id}`, dados);
+
+  return response.data;
+}
+
+export async function excluirPost(id: number): Promise<void> {
+  await api.delete(`/posts/${id}`);
+}
