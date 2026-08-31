@@ -95,6 +95,13 @@
   font-weight: 600;
 }
 
+.admin__somente-leitura {
+  color: #94a3b8;
+  font-size: 0.8125rem;
+  font-style: italic;
+  white-space: nowrap;
+}
+
 .admin__botao {
   padding: 8px 16px;
   border: 1px solid #cbd5e1;

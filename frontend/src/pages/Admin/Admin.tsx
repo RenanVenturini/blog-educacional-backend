@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 
 import PainelLayout from "../../components/PainelLayout/PainelLayout";
 
+import { useAuth } from "../../contexts/authContext";
+
 import type { Post } from "../../types/Post";
 import { naoAutorizado } from "../../services/api";
 import { excluirPost, listarPosts } from "../../services/postsService";
@@ -10,6 +12,8 @@ import { excluirPost, listarPosts } from "../../services/postsService";
 import "./Admin.css";
 
 function Admin() {
+  const { professor } = useAuth();
+
   const [posts, setPosts] = useState<Post[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
@@ -45,7 +49,7 @@ function Admin() {
       setErro(
         naoAutorizado(error)
           ? "Sua sessão expirou. Faça login novamente."
-          : "Não foi possível excluir a postagem."
+          : "Não foi possível excluir a postagem. Você só pode excluir as suas."
       );
     } finally {
       setExcluindo(null);
@@ -136,20 +140,28 @@ function Admin() {
                     Ver
                   </Link>
 
-                  <Link
-                    to={`/posts/${post.idAula}/editar`}
-                    className="admin__botao admin__botao--principal"
-                  >
-                    Editar
-                  </Link>
+                  {post.idProfessor === professor?.idProfessor ? (
+                    <>
+                      <Link
+                        to={`/posts/${post.idAula}/editar`}
+                        className="admin__botao admin__botao--principal"
+                      >
+                        Editar
+                      </Link>
 
-                  <button
-                    type="button"
-                    className="admin__botao admin__botao--perigo"
-                    onClick={() => setConfirmando(post.idAula)}
-                  >
-                    Excluir
-                  </button>
+                      <button
+                        type="button"
+                        className="admin__botao admin__botao--perigo"
+                        onClick={() => setConfirmando(post.idAula)}
+                      >
+                        Excluir
+                      </button>
+                    </>
+                  ) : (
+                    <span className="admin__somente-leitura">
+                      Somente o autor edita
+                    </span>
+                  )}
                 </div>
 
               )}

@@ -403,8 +403,8 @@ O professor precisa realizar login para acessar as funcionalidades administrativ
 ### Credenciais de teste
 
 ```text
-E-mail: professor@blog.com
-Senha: 123456
+Prof. João    joao@blog.com    joao123
+Prof. Maria   maria@blog.com   maria123
 ```
 
 ### 1. Login

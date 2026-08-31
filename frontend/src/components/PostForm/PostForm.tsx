@@ -6,12 +6,12 @@ import "./PostForm.css";
 export interface DadosPost {
   titulo: string;
   conteudo: string;
-  idProfessor: number;
   idMateria: number;
 }
 
 interface PostFormProps {
   valoresIniciais?: DadosPost;
+  autor: string;
   textoBotao: string;
   salvando: boolean;
   mensagem?: string;
@@ -21,6 +21,7 @@ interface PostFormProps {
 
 function PostForm({
   valoresIniciais,
+  autor,
   textoBotao,
   salvando,
   mensagem,
@@ -29,9 +30,6 @@ function PostForm({
 }: PostFormProps) {
   const [titulo, setTitulo] = useState(valoresIniciais?.titulo ?? "");
   const [conteudo, setConteudo] = useState(valoresIniciais?.conteudo ?? "");
-  const [idProfessor, setIdProfessor] = useState(
-    String(valoresIniciais?.idProfessor ?? "")
-  );
   const [idMateria, setIdMateria] = useState(
     String(valoresIniciais?.idMateria ?? "")
   );
@@ -42,7 +40,6 @@ function PostForm({
     aoSalvar({
       titulo,
       conteudo,
-      idProfessor: Number(idProfessor),
       idMateria: Number(idMateria),
     });
   }
@@ -70,21 +67,18 @@ function PostForm({
         <div className="post-form__linha">
 
           <div className="post-form__campo">
-            <label htmlFor="professor" className="post-form__label">
+            <label htmlFor="autor" className="post-form__label">
               Autor
             </label>
 
-            <select
-              id="professor"
-              className="post-form__input post-form__select"
-              value={idProfessor}
-              onChange={(event) => setIdProfessor(event.target.value)}
-              required
-            >
-              <option value="">Selecione um professor</option>
-              <option value="1">Prof. João</option>
-              <option value="2">Prof. Maria</option>
-            </select>
+            <input
+              id="autor"
+              type="text"
+              className="post-form__input post-form__input--travado"
+              value={autor}
+              title="O autor é o professor autenticado"
+              readOnly
+            />
           </div>
 
           <div className="post-form__campo">

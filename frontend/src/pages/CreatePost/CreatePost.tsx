@@ -3,10 +3,13 @@ import { useState } from "react";
 import PainelLayout from "../../components/PainelLayout/PainelLayout";
 import PostForm, { type DadosPost } from "../../components/PostForm/PostForm";
 
+import { useAuth } from "../../contexts/authContext";
 import { naoAutorizado } from "../../services/api";
 import { criarPost } from "../../services/postsService";
 
 function CreatePost() {
+  const { professor } = useAuth();
+
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
   const [salvando, setSalvando] = useState(false);
@@ -40,6 +43,7 @@ function CreatePost() {
     >
       <PostForm
         key={chaveFormulario}
+        autor={professor?.nome ?? ""}
         textoBotao="Salvar"
         salvando={salvando}
         mensagem={mensagem}

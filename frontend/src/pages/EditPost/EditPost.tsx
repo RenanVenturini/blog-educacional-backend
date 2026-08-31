@@ -5,6 +5,7 @@ import PainelLayout from "../../components/PainelLayout/PainelLayout";
 import PostForm, { type DadosPost } from "../../components/PostForm/PostForm";
 
 import type { Post } from "../../types/Post";
+import { useAuth } from "../../contexts/authContext";
 import { naoAutorizado } from "../../services/api";
 import { atualizarPost, buscarPostPorId } from "../../services/postsService";
 
@@ -12,6 +13,7 @@ import "./EditPost.css";
 
 function EditPost() {
   const { id } = useParams();
+  const { professor } = useAuth();
 
   const [post, setPost] = useState<Post | null>(null);
   const [carregando, setCarregando] = useState(true);
@@ -52,15 +54,22 @@ function EditPost() {
     >
       {carregando && <p className="edit-post__aviso">Carregando postagem...</p>}
 
+      {!carregando && post && post.idProfessor !== professor?.idProfessor && (
+        <p className="edit-post__aviso edit-post__aviso--erro" role="alert">
+          Você só pode editar as suas próprias postagens.
+        </p>
+      )}
+
       {!carregando && !post && (
         <p className="edit-post__aviso edit-post__aviso--erro" role="alert">
           {erro || "Postagem não encontrada."}
         </p>
       )}
 
-      {!carregando && post && (
+      {!carregando && post && post.idProfessor === professor?.idProfessor && (
         <PostForm
           valoresIniciais={post}
+          autor={post.nomeProfessor}
           textoBotao="Salvar alterações"
           salvando={salvando}
           mensagem={mensagem}

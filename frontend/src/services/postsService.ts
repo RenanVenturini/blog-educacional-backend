@@ -26,7 +26,6 @@ export async function buscarPostPorId(id: number): Promise<Post> {
 export async function criarPost(dados: {
   titulo: string;
   conteudo: string;
-  idProfessor: number;
   idMateria: number;
 }): Promise<Post> {
   const response = await api.post<Post>("/posts", dados);
@@ -38,7 +37,6 @@ export async function atualizarPost(
   dados: {
     titulo: string;
     conteudo: string;
-    idProfessor: number;
     idMateria: number;
   }
 ): Promise<Post> {
