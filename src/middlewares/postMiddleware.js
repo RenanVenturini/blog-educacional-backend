@@ -1,16 +1,18 @@
+const postsService = require('../services/postsService');
+
 exports.validatePost = (req, res, next) => {
 
   console.log(req.body)
 
-  let { titulo, conteudo, idProfessor, idMateria } = req.body;
+  let { titulo, conteudo, idMateria } = req.body;
 
   // Remove espaços em branco
   if (typeof titulo === 'string') titulo = titulo.trim();
   if (typeof conteudo === 'string') conteudo = conteudo.trim();
 
-  if (!titulo || !conteudo || !idProfessor || !idMateria) {
+  if (!titulo || !conteudo || !idMateria) {
     return res.status(400).json({
-      message: 'Título, conteúdo, professor e matéria são obrigatórios.',
+      message: 'Título, conteúdo e matéria são obrigatórios.',
     });
   }
 
@@ -19,6 +21,28 @@ exports.validatePost = (req, res, next) => {
   req.body.conteudo = conteudo;
 
   next();
+};
+
+exports.verificarAutoria = async (req, res, next) => {
+  try {
+    const aula = await postsService.findById(Number(req.params.id));
+
+    if (!aula) {
+      return res.status(404).json({
+        message: 'Aula não encontrada.',
+      });
+    }
+
+    if (aula.idProfessor !== req.professor.idProfessor) {
+      return res.status(403).json({
+        message: 'Você só pode editar ou excluir as suas próprias postagens.',
+      });
+    }
+
+    next();
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.validateId = (req, res, next) => {

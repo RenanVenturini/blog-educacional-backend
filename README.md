@@ -315,7 +315,6 @@ Os valores padrão do modelo já funcionam para desenvolvimento local — não �
 | `DB_SERVER` | `localhost` para rodar a API na máquina; o Compose usa `database` dentro do container |
 | `JWT_SECRET` | **obrigatório** — segredo que assina os tokens de login; a API não sobe sem ele |
 | `JWT_EXPIRES_IN` | validade do token (8h) |
-| `SEED_PROFESSOR_EMAIL`, `SEED_PROFESSOR_SENHA` | credenciais do professor de teste criado no primeiro start |
 
 Para um ambiente real, gere um segredo próprio:
 
@@ -354,7 +353,7 @@ Acompanhar o log da API:
 docker compose logs -f api
 ```
 
-Deve aparecer `Conectado ao banco de dados SQL Server` e `Professor de teste disponivel: professor@blog.com`.
+Deve aparecer `Conectado ao banco de dados SQL Server` e uma linha `Professor de teste disponivel:` para cada professor.
 
 A API fica em **http://localhost:3000**.
 
@@ -374,12 +373,14 @@ npm run dev
 
 A interface abre em **http://localhost:5173** — a porta precisa ser essa, porque é a única origem liberada no CORS da API.
 
-Credenciais do professor para acessar a área administrativa:
+Credenciais dos professores para acessar a área administrativa:
 
 ```
-E-mail: professor@blog.com
-Senha:  123456
+Prof. João    joao@blog.com    joao123
+Prof. Maria   maria@blog.com   maria123
 ```
+
+Cada professor entra com o próprio login, e as postagens criadas ficam automaticamente no nome de quem está autenticado.
 
 A documentação técnica do front-end (arquitetura, rotas e guia de uso) está em **[`frontend/README.md`](frontend/README.md)**.
 
@@ -402,8 +403,8 @@ Leitura de aulas é pública. **Criar, atualizar e excluir exigem token** de pro
 
 ```json
 {
-  "email": "professor@blog.com",
-  "senha": "123456"
+  "email": "joao@blog.com",
+  "senha": "joao123"
 }
 ```
 
@@ -415,7 +416,7 @@ Resposta `200 OK`:
   "professor": {
     "idProfessor": 1,
     "nome": "Prof. João",
-    "email": "professor@blog.com"
+    "email": "joao@blog.com"
   }
 }
 ```

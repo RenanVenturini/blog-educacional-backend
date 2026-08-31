@@ -16,8 +16,6 @@ services:
       DB_NAME: '${DB_NAME:-BlogEducacional}'
       JWT_SECRET: '${JWT_SECRET:?defina JWT_SECRET no arquivo .env}'
       JWT_EXPIRES_IN: '${JWT_EXPIRES_IN:-8h}'
-      SEED_PROFESSOR_EMAIL: '${SEED_PROFESSOR_EMAIL:-professor@blog.com}'
-      SEED_PROFESSOR_SENHA: '${SEED_PROFESSOR_SENHA:-123456}'
     depends_on:
       database:
         condition: service_healthy

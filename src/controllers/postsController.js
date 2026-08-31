@@ -29,12 +29,12 @@ const getPostById = async (req, res, next) => {
 
 const createPost = async (req, res, next) => {
   try {
-    const { titulo, conteudo, idProfessor, idMateria } = req.body;
+    const { titulo, conteudo, idMateria } = req.body;
 
     const novaAula = await postsService.create({
       titulo,
       conteudo,
-      idProfessor,
+      idProfessor: req.professor.idProfessor,
       idMateria,
     });
 
@@ -48,12 +48,11 @@ const updatePost = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const { titulo, conteudo, idProfessor, idMateria } = req.body;
+    const { titulo, conteudo, idMateria } = req.body;
 
     const aulaAtualizada = await postsService.update(Number(id), {
       titulo,
       conteudo,
-      idProfessor,
       idMateria,
     });
 

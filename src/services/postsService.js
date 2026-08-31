@@ -102,14 +102,12 @@ const postsService = {
         .input('idAula', sql.Int, id)
         .input('titulo', sql.VarChar(255), dadosAtualizados.titulo)
         .input('conteudo', sql.VarChar(sql.MAX), dadosAtualizados.conteudo)
-        .input('idProfessor', sql.Int, dadosAtualizados.idProfessor)
         .input('idMateria', sql.Int, dadosAtualizados.idMateria)
         .query(`
           UPDATE Aulas
           SET
             titulo = @titulo,
             conteudo = @conteudo,
-            idProfessor = @idProfessor,
             idMateria = @idMateria
           WHERE idAula = @idAula
         `);

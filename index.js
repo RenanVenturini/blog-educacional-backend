@@ -106,29 +106,34 @@ const createSchema = async (pool) => {
 
 }
 
-const criarProfessorDeTeste = async (pool) => {
-  const email = process.env.SEED_PROFESSOR_EMAIL || 'professor@blog.com';
-  const senha = process.env.SEED_PROFESSOR_SENHA || '123456';
+const PROFESSORES_DE_TESTE = [
+  { nome: 'Prof. João', email: 'joao@blog.com', senha: 'joao123' },
+  { nome: 'Prof. Maria', email: 'maria@blog.com', senha: 'maria123' },
+];
 
+const criarProfessoresDeTeste = async (pool) => {
   try {
-    const senhaHash = await authService.gerarHash(senha);
+    for (const professor of PROFESSORES_DE_TESTE) {
+      const senhaHash = await authService.gerarHash(professor.senha);
 
-    await pool
-      .request()
-      .input('email', sql.VarChar(255), email)
-      .input('senha', sql.VarChar(255), senhaHash)
-      .query(`
-        IF NOT EXISTS (SELECT 1 FROM Professores WHERE email = @email)
-        BEGIN
-            UPDATE Professores
-            SET email = @email, senha = @senha
-            WHERE idProfessor = (SELECT MIN(idProfessor) FROM Professores);
-        END
-      `);
+      await pool
+        .request()
+        .input('nome', sql.VarChar(255), professor.nome)
+        .input('email', sql.VarChar(255), professor.email)
+        .input('senha', sql.VarChar(255), senhaHash)
+        .query(`
+          IF NOT EXISTS (SELECT 1 FROM Professores WHERE email = @email)
+          BEGIN
+              UPDATE Professores
+              SET email = @email, senha = @senha
+              WHERE nome = @nome;
+          END
+        `);
 
-    console.log(`Professor de teste disponivel: ${email}`);
+      console.log(`Professor de teste disponivel: ${professor.email}`);
+    }
   } catch (error) {
-    console.error('Erro ao criar professor de teste:', error.message);
+    console.error('Erro ao criar professores de teste:', error.message);
   }
 };
 
@@ -139,7 +144,7 @@ const server = app.listen(port, async () => {
     console.log(`API rodando na porta ${port}`);
     const pool = await getPool();
     await createSchema(pool); // Chama a função para criar o schema do banco de dados
-    await criarProfessorDeTeste(pool);
+    await criarProfessoresDeTeste(pool);
   } catch (error) {
     console.error('Erro ao iniciar a API:', error.message);
     process.exit(1);
