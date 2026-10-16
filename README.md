@@ -1,8 +1,8 @@
-# 📚 Blog Educacional - Backend
+# 📚 Blog Educacional
 
-## Tech Challenge 2 - FIAP | Grupo 51
+## Tech Challenge 3 — FIAP | Grupo 20
 
-Projeto desenvolvido durante a Pós-Graduação FIAP em **Full Stack Development**.
+Projeto desenvolvido durante a Pós-Graduação FIAP em **Full Stack Development**. A API foi criada no Tech Challenge 2 e evoluída no Tech Challenge 3, que adicionou autenticação de professores e o front-end React (pasta [`frontend/`](frontend/README.md)).
 
 O objetivo deste projeto é desenvolver uma API REST para gerenciamento de conteúdos educacionais, permitindo que professores publiquem aulas e alunos possam consultar os conteúdos disponibilizados.
 
@@ -10,7 +10,7 @@ A aplicação permite o cadastro, consulta, atualização, pesquisa e exclusão 
 
 ---
 
-# 👥 Integrantes - Grupo 51
+# 👥 Integrantes - Grupo 20
 
 - Gabrielle Carvalho
 - Renan Venturini
@@ -306,21 +306,26 @@ No Windows (PowerShell):
 Copy-Item .env.example .env
 ```
 
-Os valores padrão do modelo já funcionam para desenvolvimento local — não é preciso editar nada para rodar. As variáveis são:
+Depois de copiar, **troque `DB_PASSWORD` e `JWT_SECRET`** por valores próprios. Os valores do modelo são públicos (estão no GitHub) e servem só de exemplo. A API não sobe se alguma das duas estiver vazia. As variáveis são:
 
 | Variável | Para que serve |
 | --- | --- |
 | `PORT` | porta da API (3000) |
-| `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_PORT` | credenciais do SQL Server |
+| `DB_USER`, `DB_NAME`, `DB_PORT` | usuário, nome e porta do SQL Server |
+| `DB_PASSWORD` | **obrigatório** — senha do SQL Server; precisa ter pelo menos 8 caracteres, com maiúsculas, minúsculas e números ou símbolos |
 | `DB_SERVER` | `localhost` para rodar a API na máquina; o Compose usa `database` dentro do container |
 | `JWT_SECRET` | **obrigatório** — segredo que assina os tokens de login; a API não sobe sem ele |
 | `JWT_EXPIRES_IN` | validade do token (8h) |
 
-Para um ambiente real, gere um segredo próprio:
+Para gerar um segredo aleatório:
 
 ```bash
 node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 ```
+
+> ⚠️ **Nunca faça commit do `.env`.** Ele já está no `.gitignore`. Se um segredo for enviado por engano, apagar o arquivo num commit seguinte não resolve: o valor continua no histórico do Git. Nesse caso, troque a senha ou o segredo imediatamente.
+
+> A senha do SQL Server só é aplicada quando o volume do banco é criado pela primeira vez. Se você trocar `DB_PASSWORD` depois que o banco já existe, recrie o volume com `docker compose down -v` (isso **apaga os dados** do banco local) ou altere a senha do usuário `sa` dentro do SQL Server.
 
 O banco (`BlogEducacional`), as tabelas e os dados de exemplo são criados automaticamente no primeiro start da API — não há script de migração para rodar à mão.
 
@@ -671,7 +676,7 @@ Resultado:
 
 # 🎥 Vídeo de Apresentação
 
-Vídeo de apresentação da solução desenvolvida pelo **Grupo 51**:
+Vídeo de apresentação da solução desenvolvida pelo **Grupo 20**:
 
 🔗 Link do vídeo:
 
@@ -703,4 +708,4 @@ No vídeo serão apresentados:
 
 # 📄 Licença
 
-Projeto desenvolvido exclusivamente para fins acadêmicos como parte do **Tech Challenge 2 - Pós-Graduação FIAP Full Stack Development**.
+Projeto desenvolvido exclusivamente para fins acadêmicos como parte do **Tech Challenge 3 - Pós-Graduação FIAP Full Stack Development**.
