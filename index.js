@@ -11,6 +11,11 @@ if (!process.env.JWT_SECRET) {
   process.exit(1);
 }
 
+if (!process.env.DB_PASSWORD) {
+  console.error('❌ DB_PASSWORD não definido. Configure a variável no arquivo .env.');
+  process.exit(1);
+}
+
 app.use(cors({
   origin: 'http://localhost:5173',
 }));
