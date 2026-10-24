@@ -1,6 +1,6 @@
 # 📚 Blog Educacional — Front-end
 
-## Tech Challenge 3 — FIAP | Grupo 20
+## Tech Challenge 3 — FIAP | Grupo 4
 
 ## 📌 Sobre o projeto
 
@@ -509,7 +509,7 @@ está documentado no README da raiz do repositório.
 
 Projeto desenvolvido como parte do **Tech Challenge 3 — FIAP**, com foco na construção de uma aplicação web educacional integrada a uma API REST.
 
-**Grupo 20 — FIAP**
+**Grupo 4 — FIAP**
 
 - Gabrielle Carvalho
 - Renan Venturini
