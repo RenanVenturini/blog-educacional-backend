@@ -8,3 +8,7 @@ docker-compose.yml
 .env.*
 frontend
 README.md
+mobile
+coverage
+tests
+*.pdf

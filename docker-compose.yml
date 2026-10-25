@@ -16,9 +16,22 @@ services:
       DB_NAME: '${DB_NAME:-BlogEducacional}'
       JWT_SECRET: '${JWT_SECRET:?defina JWT_SECRET no arquivo .env}'
       JWT_EXPIRES_IN: '${JWT_EXPIRES_IN:-8h}'
+      CORS_ORIGINS: '${CORS_ORIGINS:-http://localhost:5173,http://localhost:8081}'
     depends_on:
       database:
         condition: service_healthy
+    restart: unless-stopped
+
+  # Front-end web (React) servido pelo Nginx em http://localhost:5173
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: blog-educacional-frontend
+    ports:
+      - '5173:80'
+    depends_on:
+      - api
     restart: unless-stopped
 
   database:
