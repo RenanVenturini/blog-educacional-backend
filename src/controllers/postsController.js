@@ -1,4 +1,5 @@
 const postsService = require('../services/postsService');
+const comentariosService = require('../services/comentariosService');
 
 const getPosts = async (req, res, next) => {
   try {
@@ -71,6 +72,9 @@ const updatePost = async (req, res, next) => {
 const deletePost = async (req, res, next) => {
   try {
     const { id } = req.params;
+
+    // Apaga primeiro os comentários da aula, para não ficarem soltos no banco
+    await comentariosService.deleteByAula(Number(id));
 
     const removido = await postsService.delete(Number(id));
 
