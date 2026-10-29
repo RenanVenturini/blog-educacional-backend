@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: CI
 
 on:
   push:
@@ -7,11 +7,54 @@ on:
     branches: [main, master, Master]
 
 jobs:
-  build-and-push:
+  # 1. Testes automatizados da API (Jest, sem banco de dados)
+  testes-backend:
     runs-on: ubuntu-latest
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
 
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Rodar os testes
+        run: npm test
+
+  # 2. Checagem de tipos (TypeScript) do front-end web e do app mobile
+  checagem-frontend-mobile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Front-end web — instalar e checar tipos
+        working-directory: frontend
+        run: |
+          npm ci
+          npx tsc -b
+
+      - name: App mobile — instalar e checar tipos
+        working-directory: mobile
+        run: |
+          npm ci
+          npx tsc --noEmit
+
+  # 3. Build das imagens Docker da API e do front-end (só se os passos anteriores passarem).
+  #    Em push na branch principal, as imagens também são publicadas no Docker Hub.
+  imagens-docker:
+    runs-on: ubuntu-latest
+    needs: [testes-backend, checagem-frontend-mobile]
     steps:
       - name: Checkout do código
         uses: actions/checkout@v4
@@ -26,10 +69,18 @@ jobs:
       - name: Configurar Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build da imagem Docker
+      - name: Build da imagem da API
         uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ secrets.DOCKER_USERNAME }}/blog-educacional-backend:latest
+
+      - name: Build da imagem do front-end
+        uses: docker/build-push-action@v6
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/blog-educacional-frontend:latest
