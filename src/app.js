@@ -6,6 +6,8 @@ const cors = require('cors');
 const errorMiddleware = require('./middlewares/errorMiddleware');
 const postRoutes = require('./routes/postsRoutes');
 const authRoutes = require('./routes/authRoutes');
+const professoresRoutes = require('./routes/professoresRoutes');
+const alunosRoutes = require('./routes/alunosRoutes');
 const materiasRoutes = require('./routes/materiasRoutes');
 
 const app = express();
@@ -24,6 +26,10 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 
 app.use('/posts', postRoutes);
+
+app.use('/professores', professoresRoutes);
+
+app.use('/alunos', alunosRoutes);
 
 app.use('/materias', materiasRoutes);
 
