@@ -42,6 +42,23 @@ const authService = {
 
     return { token, professor: dados };
   },
+
+  // O e-mail não pode se repetir entre professores e alunos.
+  // Devolve { perfil, id } de quem já usa o e-mail, ou null se estiver livre.
+  async buscarPorEmail(email) {
+    const pool = await getPool();
+
+    const result = await pool
+      .request()
+      .input('email', sql.VarChar(255), email)
+      .query(`
+        SELECT 'professor' AS perfil, idProfessor AS id FROM Professores WHERE email = @email
+        UNION ALL
+        SELECT 'aluno' AS perfil, idAluno AS id FROM Alunos WHERE email = @email
+      `);
+
+    return result.recordset[0] || null;
+  },
 };
 
 module.exports = authService;

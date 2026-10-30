@@ -1,9 +1,6 @@
 const postsService = require('../services/postsService');
 
 exports.validatePost = (req, res, next) => {
-
-  console.log(req.body)
-
   let { titulo, conteudo, idMateria } = req.body;
 
   // Remove espaços em branco
@@ -19,6 +16,60 @@ exports.validatePost = (req, res, next) => {
   // Atualiza o body com os valores limpos
   req.body.titulo = titulo;
   req.body.conteudo = conteudo;
+
+  next();
+};
+
+// Comentário do aluno: precisa do nome dele e do texto
+exports.validateComentario = (req, res, next) => {
+  let { nome, texto } = req.body;
+
+  if (typeof nome === 'string') nome = nome.trim();
+  if (typeof texto === 'string') texto = texto.trim();
+
+  if (!nome || !texto) {
+    return res.status(400).json({
+      message: 'Nome e comentário são obrigatórios.',
+    });
+  }
+
+  if (nome.length > 100) {
+    return res.status(400).json({
+      message: 'O nome pode ter no máximo 100 caracteres.',
+    });
+  }
+
+  if (texto.length > 1000) {
+    return res.status(400).json({
+      message: 'O comentário pode ter no máximo 1000 caracteres.',
+    });
+  }
+
+  req.body.nome = nome;
+  req.body.texto = texto;
+
+  next();
+};
+
+// Resposta do professor a um comentário: precisa só do texto
+exports.validateResposta = (req, res, next) => {
+  let { texto } = req.body;
+
+  if (typeof texto === 'string') texto = texto.trim();
+
+  if (!texto) {
+    return res.status(400).json({
+      message: 'A resposta não pode ficar vazia.',
+    });
+  }
+
+  if (texto.length > 1000) {
+    return res.status(400).json({
+      message: 'A resposta pode ter no máximo 1000 caracteres.',
+    });
+  }
+
+  req.body.texto = texto;
 
   next();
 };

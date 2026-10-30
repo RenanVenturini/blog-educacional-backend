@@ -1,4 +1,4 @@
-// Modelo de dados da Aula
+// Modelos de dados do blog (documentam as colunas das tabelas criadas em index.js)
 // Responsável: AMANDA (Banco e Modelagem)
 
 const Aula = {
@@ -10,16 +10,34 @@ const Aula = {
   dataPublicacao: Date
 };
 
-module.exports = Aula;
 const Professor = {
   idProfessor: Number,
-  nome: String
+  nome: String,
+  email: String,
+  senha: String
 };
 
-module.exports = Professor;
- const Materia = {
+const Aluno = {
+  idAluno: Number,
+  nome: String,
+  email: String
+};
+
+const Materia = {
   idMateria: Number,
   nome: String
 };
 
-module.exports = Materia;
+// Comentário do aluno + resposta do professor (opcional, só uma por comentário)
+const Comentario = {
+  idComentario: Number,
+  idAula: Number,
+  nomeAluno: String,
+  texto: String,
+  dataComentario: Date,
+  resposta: String,
+  nomeProfessorResposta: String,
+  dataResposta: Date
+};
+
+module.exports = { Aula, Professor, Aluno, Materia, Comentario };

@@ -1,9 +1,5 @@
 require('dotenv').config();
 
-const express = require('express');
-const cors = require('cors');
-
-const app = express();
 const port = process.env.PORT || 3000;
 
 if (!process.env.JWT_SECRET) {
@@ -11,23 +7,15 @@ if (!process.env.JWT_SECRET) {
   process.exit(1);
 }
 
-app.use(cors({
-  origin: 'http://localhost:5173',
-}));
+if (!process.env.DB_PASSWORD) {
+  console.error('❌ DB_PASSWORD não definido. Configure a variável no arquivo .env.');
+  process.exit(1);
+}
 
+// As rotas e middlewares ficam em src/app.js; aqui só iniciamos o banco e o servidor
+const app = require('./src/app');
 const { getPool, closePool, sql } = require('./src/config/database');
-const errorMiddleware = require('./src/middlewares/errorMiddleware');
-const postRoutes = require('./src/routes/postsRoutes');
-const authRoutes = require('./src/routes/authRoutes');
 const authService = require('./src/services/authService');
-
-app.use(express.json());
-
-app.use('/auth', authRoutes);
-
-app.use('/posts', postRoutes);
-
-app.use(errorMiddleware.errorHandler);
 
 const createSchema = async (pool) => {
   let schema = [
@@ -91,6 +79,34 @@ const createSchema = async (pool) => {
     BEGIN
         ALTER TABLE Professores ADD senha VARCHAR(255) NULL;
     END
+    `,
+    `
+    -- Criar tabela Alunos se não existir (alunos não fazem login, então não têm senha)
+    IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Alunos')
+    BEGIN
+        CREATE TABLE Alunos (
+            idAluno INT IDENTITY(1,1) PRIMARY KEY,
+            nome VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL
+        );
+    END
+    `,
+    `
+    -- Criar tabela Comentarios se não existir.
+    -- Cada linha é um comentário de aluno + a resposta do professor (opcional, só uma)
+    IF NOT EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'Comentarios')
+    BEGIN
+        CREATE TABLE Comentarios (
+            idComentario INT IDENTITY(1,1) PRIMARY KEY,
+            idAula INT NOT NULL,
+            nomeAluno VARCHAR(100) NOT NULL,
+            texto VARCHAR(1000) NOT NULL,
+            dataComentario DATETIME DEFAULT GETDATE(),
+            resposta VARCHAR(1000) NULL,
+            nomeProfessorResposta VARCHAR(255) NULL,
+            dataResposta DATETIME NULL
+        );
+    END
     `]
 
   // for...of com await — garante execução sequencial e propagação de erros
@@ -137,6 +153,31 @@ const criarProfessoresDeTeste = async (pool) => {
   }
 };
 
+const ALUNOS_DE_TESTE = [
+  { nome: 'Ana Souza', email: 'ana@blog.com' },
+];
+
+const criarAlunosDeTeste = async (pool) => {
+  try {
+    for (const aluno of ALUNOS_DE_TESTE) {
+      await pool
+        .request()
+        .input('nome', sql.VarChar(255), aluno.nome)
+        .input('email', sql.VarChar(255), aluno.email)
+        .query(`
+          IF NOT EXISTS (SELECT 1 FROM Alunos WHERE email = @email)
+          BEGIN
+              INSERT INTO Alunos (nome, email) VALUES (@nome, @email);
+          END
+        `);
+
+      console.log(`Aluno de exemplo cadastrado: ${aluno.email}`);
+    }
+  } catch (error) {
+    console.error('Erro ao criar alunos de teste:', error.message);
+  }
+};
+
 const server = app.listen(port, async () => {
   try {
     // Tenta conectar ao banco de dados
@@ -145,6 +186,7 @@ const server = app.listen(port, async () => {
     const pool = await getPool();
     await createSchema(pool); // Chama a função para criar o schema do banco de dados
     await criarProfessoresDeTeste(pool);
+    await criarAlunosDeTeste(pool);
   } catch (error) {
     console.error('Erro ao iniciar a API:', error.message);
     process.exit(1);
